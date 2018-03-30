@@ -1,21 +1,18 @@
 <html>
 
 <head>
-        <script src="main.js"></script>
-       
-        <link rel="stylesheet" type="text/css" href="css/image.css">
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <script src="js/main.js"></script>
+    <script src="js/jspdf.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/image.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+
 </head>
 
 <body onload="checkFileAPI()" class="container">
-    <div id="container">    
+    <div>
         <input type="file" onchange='readText(this)' />
-        <div id="main">
-            ...
-        </div>
-        <div class="puzzle piece1"></div>
-
+        <a id="clickbind" href="#" class="btn btn-primary" style="float:right">Export To PDF</a>
     </div>
 </body>
-
 </html>

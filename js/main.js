@@ -1,10 +1,8 @@
 /**
  * Check for the various File API support.
  */
-
-
-
 var reader; //GLOBAL File Reader object for demo purpose only
+
 function checkFileAPI() {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         reader = new FileReader();
@@ -154,10 +152,15 @@ function readText(filePath) {
     return true;
 }
 
-/**
- * display content using a basic HTML replacement
- */
-/*function displayContents(txt) {
-    var el = document.getElementById('main'); 
-    el.innerHTML = txt; //display output in DOM
-}   */
+function onClickPDF() {
+    var pdf = new jsPDF('p', 'pt', 'letter');
+    pdf.canvas.height = 72 * 11;
+    pdf.canvas.width = 72 * 8.5;
+
+    pdf.fromHTML(document.body);
+
+    pdf.save('output.pdf');
+};
+
+var element = document.getElementById("clickbind");
+element.addEventListener("click", onClickPDF);
