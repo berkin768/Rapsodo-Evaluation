@@ -28,7 +28,35 @@ function readText(filePath) {
     if (filePath.files && filePath.files[0]) {
         reader.onload = function (e) {
             output = e.target.result;
-            console.log(output)
+            var allTextLines = output.split(/\r\n|\r|\n/);
+
+            var numberOfPlayers = getNumberOfPlayers(allTextLines[1].split(','))
+            var playerArray = new Array (numberOfPlayers)
+
+            for(var i=3; i < allTextLines.length; i++){
+                var line = allTextLines[i].split(',').filter(value => Object.keys(value).length !== 0);
+                var indice = 0
+               
+                for(var j=0; j < line.length; j += 2){
+                    var position = line[j]
+                    var positionValue = parseInt(line[j + 1])
+
+                    if(typeof playerArray[indice] === 'undefined'){
+                        playerArray[indice] = []
+                    }
+                    
+                    if(typeof playerArray[indice][position] === 'undefined'){
+                        playerArray[indice][position] = {region : 0,total_shots : 0, successful_shots : 0}
+                    }
+                    var total_shots = playerArray[indice][position].total_shots
+                    var successful_shots = playerArray[indice][position].successful_shots
+                    playerArray[indice][position]  = {region : position, total_shots : total_shots + 1, successful_shots : successful_shots + positionValue}
+
+                    indice++
+                }
+            }
+            
+            console.log(playerArray)
             //displayContents(output);
         }; //end onload()
         reader.readAsText(filePath.files[0]);
