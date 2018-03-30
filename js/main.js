@@ -18,6 +18,10 @@ function getNumberOfPlayers(header) {
     return header.length / 2
 }
 
+function isDouble(value){
+    return (value === +value && value !== (value | 0))
+}
+
 function drawPlayer(array) {
     console.log(array)
     for (var i = 0; i < array.length; i++) {
@@ -65,7 +69,7 @@ function drawPlayer(array) {
 
             Object.values(array[i][j]).forEach(function (value) {
                 var cell = document.createElement("td")
-                cell.innerHTML = (value === +value && value !== (value | 0)) ? '%' + value.toFixed(2) : value //to recognize float and make it 2 number after ,
+                cell.innerHTML = isDouble(value)? '%' + value.toFixed(2) : value //to recognize float and make it 2 number after ,
                 row.appendChild(cell)
             });
         }
@@ -155,26 +159,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         pdf.save('output.pdf');
     };
-
-    /*function onClickPDF() {
-        var doc = new jsPDF();
-        var elementHandler = {
-            '#ignorePDF': function (element, renderer) {
-                return true;
-            }
-        };
-        var source = window.document.getElementsByTagName("body")[0];
-        doc.fromHTML(
-            source,
-            15,
-            15, {
-                'width': 180,
-                'elementHandlers': elementHandler
-            });
-
-        doc.output("dataurlnewwindow");
-    }*/
-
 
     var element = document.getElementById("clickbind");
     element.addEventListener("click", onClickPDF)
