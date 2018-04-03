@@ -23,32 +23,139 @@ function isDouble(value) {
 }
 
 Array.prototype.first = function () {
-    for(var i in this){if(i!=null) return this[i]}
+    for (var i in this) {
+        if (i != null) return this[i]
+    }
 };
+
+
+function drawHeatmap(array, i, object) {
+    var config = {
+        container: object,
+        radius: 30,
+        maxOpacity: .5,
+        minOpacity: 0,
+        blur: .1,
+        gradient: {
+            // enter n keys between 0 and 1 here
+            // for gradient color customization
+            '0': 'red',
+            '1': 'green'
+        }
+    };
+    var heatmapInstance = h337.create(config)
+
+
+    var points = [];
+
+    array.forEach(function (item) {
+        var x, y;
+
+        switch (item.position) {
+            case '1':
+                x = 40;
+                y = 90;
+                break;
+            case '2':
+                x = 70;
+                y = 285;
+                break;
+            case '3':
+                x = 250;
+                y = 330;
+                break;
+            case '4':
+                x = 430;
+                y = 285;
+                break;
+            case '5':
+                x = 460;
+                y = 90;
+                break;
+            case '6':
+                x = 250;
+                y = 250;
+                break;
+            case '7':
+                x = 120;
+                y = 170;
+                break;
+            case '8':
+                x = 375;
+                y = 170;
+                break;
+            case '9':
+                x = 205;
+                y = 160;
+                break;
+            case '10':
+                x = 295;
+                y = 160;
+                break;
+            case '11':
+                x = 115;
+                y = 55;
+                break;
+            case '12':
+                x = 205;
+                y = 55;
+                break;
+            case '13':
+                x = 295;
+                y = 55;
+                break;
+            case '14':
+                x = 385;
+                y = 55;
+                break;
+        }
+
+        var point = {
+            x: x,
+            y: y,
+            value: item.success_rate
+        }
+
+        points.push(point);
+    })
+
+    var data = {
+        min: -10,
+        max: 100,
+        data: points
+    };
+    // if you have a set of datapoints always use setData instead of addData
+    // for data initialization
+    heatmapInstance.setData(data);
+}
 
 function drawPlayer(array) {
     var playerCount = 0
-    array.forEach(function(player){
+    array.forEach(function (player) {
         playerCount++
 
-        var heatmapDiv = document.createElement('div')
-        heatmapDiv.setAttribute('id','heatmapContainer')
-        heatmapDiv.setAttribute('style','display:inline-block')
-        heatmapDiv.className = 'heatmapContainer'
-        document.body.appendChild(heatmapDiv);
+        var playerDiv = document.createElement('div')
+        playerDiv.setAttribute('id', 'player' + playerCount)
+        playerDiv.className = 'player'
+        document.body.appendChild(playerDiv)
 
-        drawHeatmap(player,playerCount,heatmapDiv)
+        var heatmapDiv = document.createElement('div')
+        heatmapDiv.setAttribute('id', 'heatmapContainer')
+        heatmapDiv.setAttribute('style', 'margin:0 auto')
+        heatmapDiv.className = 'heatmapContainer'
+        document.getElementById('player' + playerCount).appendChild(heatmapDiv)
+
+        drawHeatmap(player, playerCount, heatmapDiv)
 
         var tag = document.createElement('h4')
         tag.innerHTML = 'Player ' + playerCount
         tag.setAttribute('style', 'text-align:center')
-       
-        document.body.appendChild(tag);
+        document.getElementById('player' + playerCount).appendChild(tag)
 
         var table = document.createElement("table");
         table.className = 'table'
         table.setAttribute("id", "player" + playerCount);
-        document.body.appendChild(table);
+        document.getElementById('player' + playerCount).appendChild(table)
 
         var header = table.createTHead()
 
@@ -76,7 +183,7 @@ function drawPlayer(array) {
         });
         var tbody = table.createTBody()
 
-        player.forEach(function(shots){
+        player.forEach(function (shots) {
             var row = document.createElement("tr");
             tbody.appendChild(row)
 
@@ -86,6 +193,7 @@ function drawPlayer(array) {
                 row.appendChild(cell)
             });
         })
+
     })
 }
 
@@ -148,7 +256,6 @@ function readText(filePath) {
             var file = reader.OpenTextFile(filePath, 1); //ActiveX File Object
             output = file.ReadAll(); //text contents of file
             file.Close(); //close file "input stream"
-            //displayContents(output);
         } catch (e) {
             if (e.number == -2146827859) {
                 alert('Unable to access local files due to browser security settings. ' +
@@ -163,109 +270,26 @@ function readText(filePath) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    function onClickPDF() {
-        var pdf = new jsPDF('p', 'pt', 'a4');
-        pdf.canvas.height = 72 * 11;
-        pdf.canvas.width = 72 * 8.5;
 
-        pdf.fromHTML(document.body);
+
+    function onClickPDF() {
+
+        var canvas = document.getElementsByClassName('heatmap-canvas');
+        var player = document.getElementsByClassName('player')
+
+        var pdf = new jsPDF('p', 'pt', 'a4');
+
+        for (var i = 0; i < player.length; i++) {
+            pdf.fromHTML(player[i], 80, 300);
+
+            pdf.addImage(canvas[i], 100, 20)
+            if (i != player.length - 1)
+                pdf.addPage()
+        }
 
         pdf.save('output.pdf');
     };
 
     var element = document.getElementById("clickbind");
     element.addEventListener("click", onClickPDF)
-
-
 });
-
-
-function drawHeatmap(array,i,object) {
-    var heatmapInstance = h337.create({
-        container: object
-    });
-
-
-    
-    var points = [];
-    var max = 100;
-    array.forEach(function(item){
-        var x,y;
-
-        switch(item.position){
-            case '1':
-            x = 40;
-            y = 90;
-            break;
-            case '2':
-            x = 70;
-            y = 285;
-            break;
-            case '3':
-            x = 250;
-            y = 330;
-            break;
-            case '4':
-            x = 430;
-            y = 285;
-            break;
-            case '5':
-            x = 460;
-            y = 90;
-            break;
-            case '6':
-            x = 250;
-            y = 250;
-            break;
-            case '7':
-            x = 120;
-            y = 170;
-            break;
-            case '8':
-            x = 375;
-            y = 170;
-            break;
-            case '9':
-            x = 200;
-            y = 160;
-            break;
-            case '10':
-            x = 290;
-            y = 160;
-            break;
-            case '11':
-            x = 110;
-            y = 55;
-            break;
-            case '12':
-            x = 200;
-            y = 55;
-            break;
-            case '13':
-            x = 290;
-            y = 55;
-            break;
-            case '14':
-            x = 380;
-            y = 55;
-            break;
-        }
-
-        var point = {
-            x : x,
-            y : y,
-            value : item.success_rate
-        }
-
-        points.push(point);
-    })
-
-    var data = {
-        min : 0,
-        max: max,
-        data: points
-    };
-    // if you have a set of datapoints always use setData instead of addData
-    // for data initialization
-    heatmapInstance.setData(data);
-}

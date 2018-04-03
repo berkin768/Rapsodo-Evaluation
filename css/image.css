@@ -1,6 +1,8 @@
-
-.heatmapContainer { 
-    background-image: url(../files/field.jpg);
+.heatmapContainer {
     width: 500px;
     height: 376px;
+}
+
+canvas {
+    background-image: url(../files/field.jpg);
 }
